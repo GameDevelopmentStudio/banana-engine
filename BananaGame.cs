@@ -103,9 +103,14 @@ namespace BananaEngine
             // Update inputstate
             input.update();
 
+            // Some example debug input functionality
+            // Override Update method to disable them.
+            // TODO: Make some of these work only with BananaConfig.DEBUG enabled?
+
             // Allows the game to exit
             if (/*input.pressed(Buttons.Back) ||*/ input.pressed(Keys.Escape))
                 this.Exit();
+            // Hand
             else if (input.pressed(Keys.F4))
             {
                 int rw, rh;
