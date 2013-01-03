@@ -6,16 +6,16 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace BananaEngine.Graphics
+namespace bEngine.Graphics
 {
-    public class Spritemap : Graphic
+    public class bSpritemap : bGraphic
     {
         public Texture2D image;
         public int spriteWidth, spriteHeight;
         public int columns, rows;
 
-        public Anim currentAnim;
-        public Dictionary<string, Anim> animations;
+        public bAnim currentAnim;
+        public Dictionary<string, bAnim> animations;
 
         public bool flipped = false;
 
@@ -24,7 +24,7 @@ namespace BananaEngine.Graphics
         public new int width { get { return spriteWidth; } }
         public new int height { get { return spriteHeight; } }
 
-        public Spritemap(Texture2D image, int spriteWidth, int spriteHeight)
+        public bSpritemap(Texture2D image, int spriteWidth, int spriteHeight)
         {
             this.image = image;
             this._width = image.Width;
@@ -36,16 +36,16 @@ namespace BananaEngine.Graphics
             columns = _width / spriteWidth;
             rows = _height / spriteHeight;
 
-            animations = new Dictionary<string, Anim>();
+            animations = new Dictionary<string, bAnim>();
             currentAnim = null;
         }
 
-        public void add(Anim animation)
+        virtual public void add(bAnim animation)
         {
             animations.Add(animation.name, animation);
         }
 
-        public void play(string anim)
+        virtual public void play(string anim)
         {
             if (currentAnim == null || currentAnim.name != anim)
             {
@@ -57,13 +57,13 @@ namespace BananaEngine.Graphics
             }
         }
 
-        public void update()
+        virtual public void update()
         {
             if (currentAnim != null)
                 currentAnim.update();
         }
 
-        protected Rectangle getFrame(int frame)
+        virtual protected Rectangle getFrame(int frame)
         {
             Rectangle rect = new Rectangle((frame % columns) * spriteWidth,
                                            (frame / columns) * spriteHeight,
@@ -78,7 +78,7 @@ namespace BananaEngine.Graphics
         }
     }
 
-    public class Anim
+    public class bAnim
     {
         public string name;
         public int[] frames;
@@ -106,7 +106,7 @@ namespace BananaEngine.Graphics
         protected int currentFrameIndex;
         protected float actualFrameIndex;
 
-        public Anim(String name, int[] frames, float speed = 1.0f, bool loop = true)
+        public bAnim(String name, int[] frames, float speed = 1.0f, bool loop = true)
         {
             this.name = name;
             this.frames = frames;
@@ -119,7 +119,7 @@ namespace BananaEngine.Graphics
             playing = false;
         }
 
-        public void play(int from = 0)
+        virtual public void play(int from = 0)
         {
             finished = false;
             playing = true;
@@ -128,23 +128,23 @@ namespace BananaEngine.Graphics
             actualFrameIndex = from;
         }
 
-        public void pause()
+        virtual public void pause()
         {
             playing = false;
         }
 
-        public void resume()
+        virtual public void resume()
         {
             playing = true;
         }
 
-        public void stop()
+        virtual public void stop()
         {
             playing = false;
             finished = true;
         }
 
-        public void update()
+        virtual public void update()
         {
             if (playing && !finished)
             {
@@ -166,7 +166,7 @@ namespace BananaEngine.Graphics
                         {
                             playing = false;
                             finished = true;
-                            currentFrameIndex = frames[frames.Length - 1];
+                            currentFrameIndex = frames.Length - 1;
                         }
                     }
 

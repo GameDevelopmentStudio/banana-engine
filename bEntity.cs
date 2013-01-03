@@ -6,9 +6,9 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace BananaEngine
+namespace bEngine
 {
-    public class GameEntity
+    public class bEntity
     {
         public int id;
 
@@ -17,26 +17,26 @@ namespace BananaEngine
         public int y { get { return (int)pos.Y; } set { pos.Y = value; } }
 
         public List<String> attributes;
-        public Mask mask;
+        public bMask mask;
         public bool collidable;
 
         public Color color;
         public int layer;
 
-        public BananaGame game;
-        public GameState world;
+        public bGame game;
+        public bGameState world;
 
-        public GameInput input = BananaGame.input;
+        public bInput input = bGame.input;
 
         public int[] timer;
         public static int NTIMERS = 5;
 
-        public GameEntity(int x, int y)
+        public bEntity(int x, int y)
         {
             pos = new Vector2(x, y);
             id = -1;
             layer = 0;
-            mask = new Mask(0, 0, 0, 0);
+            mask = new bMask(0, 0, 0, 0);
             color = Color.White;
             collidable = true;
             attributes = new List<String>();
@@ -58,19 +58,19 @@ namespace BananaEngine
 
         virtual public void render(GameTime dt, SpriteBatch sb)
         {
-            if (BananaConfig.DEBUG)
+            if (bGame.DEBUG)
             {
                 mask.render(sb);
                 sb.DrawString(game.gameFont, ""+id, new Vector2(pos.X, pos.Y - 8), color);
             }
         }
 
-        virtual public bool collides(GameEntity other)
+        virtual public bool collides(bEntity other)
         {
             return this.mask.collides(other.mask);
         }
 
-        virtual public void onCollision(String type, GameEntity other)
+        virtual public void onCollision(String type, bEntity other)
         {
         }
 
@@ -85,7 +85,7 @@ namespace BananaEngine
             return world.collides(this, categories);
         }
 
-        virtual public bool placeMeeting(int x, int y, String category, Func<GameEntity, GameEntity, bool> condition = null)
+        virtual public bool placeMeeting(int x, int y, String category, Func<bEntity, bEntity, bool> condition = null)
         {
             String[] c = { category };
             Vector2 old = this.pos;
@@ -101,7 +101,7 @@ namespace BananaEngine
             return collision;
         }
 
-        virtual public bool placeMeeting(Vector2 position, String category, Func<GameEntity, GameEntity, bool> condition = null)
+        virtual public bool placeMeeting(Vector2 position, String category, Func<bEntity, bEntity, bool> condition = null)
         {
             String[] c = { category };
             Vector2 old = this.pos;
@@ -117,7 +117,7 @@ namespace BananaEngine
             return collision;
         }
 
-        public Vector2 moveToContact(Vector2 to, String category, Func<GameEntity, GameEntity, bool> condition = null)
+        public Vector2 moveToContact(Vector2 to, String category, Func<bEntity, bEntity, bool> condition = null)
         {
             Vector2 remnant = Vector2.Zero;
 
@@ -162,19 +162,19 @@ namespace BananaEngine
             return remnant;
         }
 
-        virtual public GameEntity instancePlace(int x, int y, String category, String attr = null, Func<GameEntity, GameEntity, bool> condition = null)
+        virtual public bEntity instancePlace(int x, int y, String category, String attr = null, Func<bEntity, bEntity, bool> condition = null)
         {
             return instancePlace(new Vector2(x, y), category, attr, condition);
         }
 
-        virtual public GameEntity instancePlace(Vector2 position, String category, String attr = null, Func<GameEntity, GameEntity, bool> condition = null)
+        virtual public bEntity instancePlace(Vector2 position, String category, String attr = null, Func<bEntity, bEntity, bool> condition = null)
         {
             Vector2 old = this.pos;
 
             this.pos = position;
             mask.update(x, y);
 
-            GameEntity e = world.instanceCollision(this, category, attr, condition);
+            bEntity e = world.instanceCollision(this, category, attr, condition);
 
             this.pos = old;
             mask.update(x, y);

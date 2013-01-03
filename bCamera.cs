@@ -6,9 +6,9 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace BananaEngine
+namespace bEngine
 {
-    public class Camera2d
+    public class bCamera2d
     {
         protected float _zoom; // Camera Zoom
         public Matrix _transform; // Matrix Transform
@@ -29,7 +29,7 @@ namespace BananaEngine
         public Rectangle bounds;
         public GraphicsDevice graphicsDevice;
 
-        public Camera2d(GraphicsDevice gd)
+        public bCamera2d(GraphicsDevice gd)
         {
             _zoom = 3.0f;
             _rotation = 0.0f;

@@ -6,9 +6,9 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace BananaEngine.Graphics
+namespace bEngine.Graphics
 {
-    public class Graphic
+    public class bGraphic
     {
         public int width = 0, height = 0;
         public Color color = Color.White;

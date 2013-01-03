@@ -1,7 +1,6 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
 using System.IO;
 
 using Microsoft.Xna.Framework;
@@ -12,105 +11,90 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
-namespace BananaEngine
+namespace bEngine
 {
-    /// <summary>
-    /// This is the main type for your game
-    /// </summary>
-    public class BananaGame : Microsoft.Xna.Framework.Game
+    public class bGame : Microsoft.Xna.Framework.Game
     {
-        // Rendering
-        protected GraphicsDeviceManager graphics;
-        protected SpriteBatch spriteBatch;
-        public GraphicsDevice graphicsDevice { get { return GraphicsDevice; } }
-        protected uint horizontalZoom, verticalZoom;
+        // Debug variables
+        public static bool DEBUG = false;
+
+        public GraphicsDeviceManager graphics;
+        public SpriteBatch spriteBatch;
+
+        public static bInput input = new bInput();
         public SpriteFont gameFont;
 
-        // Input
-        public static GameInput input = new GameInput();
-        
-        // Gameplay
-        protected GameState world;
-
         // Time flow
-        protected double millisecondsPerFrame = 17;
+        public double millisecondsPerFrame = 17;
         protected double timeSinceLastUpdate = 0;
 
-        public BananaGame()
+        // Resolution
+        protected int width, height;
+        protected uint horizontalZoom, verticalZoom;
+
+        // Gamestate
+        public bGameState world;
+
+        public bGame()
         {
+            graphics = new GraphicsDeviceManager(this);
+            Content.RootDirectory = "Content";
+
+            initSettings();
+
+            Resolution.Init(ref graphics, width, height);
+            Resolution.SetVirtualResolution(width, height);
+            Resolution.SetResolution((int) (width * horizontalZoom), (int) (height * verticalZoom), false);
+        }
+
+        protected virtual void initSettings()
+        {
+            // default resolution
             horizontalZoom = 3;
             verticalZoom = 3;
-
-            graphics = new GraphicsDeviceManager(this);
-
-            Resolution.Init(ref graphics, 256, 240);
-            Resolution.SetVirtualResolution(256, 240);
-            Resolution.SetResolution(256*3, 240*3, false);
+            width = 320;
+            height = 240;
 
             Content.RootDirectory = "Content";
         }
 
-        /// <summary>
-        /// Allows the game to perform any initialization it needs to before starting to run.
-        /// This is where it can query for any required services and load any non-graphic
-        /// related content.  Calling base.Initialize will enumerate through any components
-        /// and initialize them as well.
-        /// </summary>
         protected override void Initialize()
         {
-            // TODO: Create Initial Level
             base.Initialize();
+
+            input.registerKey("DEBUG", Buttons.Y);
+            input.registerKey("DEBUG", Keys.H);
         }
 
-        /// <summary>
-        /// LoadContent will be called once per game and is the place to load
-        /// all of your content.
-        /// </summary>
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            // Load game-wide available sprite fonts
-            // gameFont = Content.Load<SpriteFont>("font0");
-
-            // TODO: use this.Content to load your game content here
         }
 
-        /// <summary>
-        /// UnloadContent will be called once per game and is the place to unload
-        /// all content.
-        /// </summary>
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
         }
 
-        /// <summary>
-        /// Allows the game to run logic such as updating the world,
-        /// checking for collisions, gathering input, and playing audio.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+
+        virtual public void update(GameTime gameTime)
+        {
+        }
+
         protected override void Update(GameTime gameTime)
         {
             // Control time flow (30fps)
             timeSinceLastUpdate += gameTime.ElapsedGameTime.TotalMilliseconds;
             if (timeSinceLastUpdate < millisecondsPerFrame)
                 return;
-
             timeSinceLastUpdate = 0;
 
             // Update inputstate
             input.update();
 
-            // Some example debug input functionality
-            // Override Update method to disable them.
-            // TODO: Make some of these work only with BananaConfig.DEBUG enabled?
-
             // Allows the game to exit
-            if (/*input.pressed(Buttons.Back) ||*/ input.pressed(Keys.Escape))
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
-            // Hand
             else if (input.pressed(Keys.F4))
             {
                 int rw, rh;
@@ -136,35 +120,48 @@ namespace BananaEngine
                 millisecondsPerFrame -= 5.0;
             }
 
-            if (input.pressed(Buttons.Y))
-                BananaConfig.DEBUG = !BananaConfig.DEBUG;
-            
+            if (input.pressed("DEBUG"))
+                DEBUG = !DEBUG;
+				
+				
+			update(gameTime);
+			
             if (world != null)
                 world.update(gameTime);
 
             base.Update(gameTime);
         }
 
-        /// <summary>
-        /// This is called when the game should draw itself.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+        virtual public void render(GameTime gameTime)
+        {
+        }
+
         protected override void Draw(GameTime gameTime)
         {
             Resolution.BeginDraw();
             // Generate resolution render matrix 
             Matrix matrix = Resolution.getTransformationMatrix();
-            
+
+            spriteBatch.Begin(SpriteSortMode.Deferred,
+                    BlendState.AlphaBlend,
+                    SamplerState.PointClamp,
+                    null,
+                    RasterizerState.CullCounterClockwise,
+                    null,
+                    matrix);
+
+            Color bgColor = Color.CornflowerBlue;
+            GraphicsDevice.Clear(bgColor);
+
+            render(gameTime);
             // Render world
             world.render(gameTime, spriteBatch, matrix);
 
-            // Finish drawing
             spriteBatch.End();
-
             base.Draw(gameTime);
         }
 
-        public void changeWorld(GameState newWorld)
+        public void changeWorld(bGameState newWorld)
         {
             if (world != null)
                 world.end();
@@ -172,7 +169,7 @@ namespace BananaEngine
             world = newWorld;
             world.game = this;
 
-            newWorld.init();   
+            newWorld.init();
         }
 
         public int count = 0;

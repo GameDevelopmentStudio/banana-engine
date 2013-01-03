@@ -6,15 +6,15 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace BananaEngine
+namespace bEngine
 {
-    public class SolidGrid : Mask
+    public class bSolidGrid : bMask
     {
         public int columns, rows;
         public int tileWidth, tileHeight;
         public bool[,] solidData;
 
-        public SolidGrid(int cols, int rows, int tileWidth, int tileHeight) : base(0, 0, cols * tileWidth, rows * tileHeight)
+        public bSolidGrid(int cols, int rows, int tileWidth, int tileHeight) : base(0, 0, cols * tileWidth, rows * tileHeight)
         {
             columns = cols;
             this.rows = rows;
@@ -49,7 +49,7 @@ namespace BananaEngine
             return true;
         }
 
-        public override bool collides(Mask other)
+        public override bool collides(bMask other)
         {
             // Bbox check
             if (!base.collides(other))
@@ -70,7 +70,7 @@ namespace BananaEngine
 
         public override void render(Microsoft.Xna.Framework.Graphics.SpriteBatch sb)
         {
-            if (BananaConfig.DEBUG)
+            if (bGame.DEBUG)
             {
                 Rectangle r = new Rectangle(0, 0, tileWidth, tileHeight);
                 for (int xx = 0; xx < columns; xx++)

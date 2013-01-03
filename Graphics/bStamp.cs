@@ -6,13 +6,13 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace BananaEngine.Graphics
+namespace bEngine.Graphics
 {
-    public class Stamp : Graphic
+    public class bStamp : bGraphic
     {
         protected Texture2D image;
 
-        public Stamp(Texture2D image)
+        public bStamp(Texture2D image)
         {
             this.image = image;
             width = image.Width;

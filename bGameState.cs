@@ -6,23 +6,23 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace BananaEngine
+namespace bEngine
 {
-    public class GameState
+    public class bGameState
     {
-        public BananaGame game;
+        public bGame game;
 
-        protected Dictionary<string, List<GameEntity>> entities;
-        protected Dictionary<GameEntity, string> categories;
-        protected List<GameEntity> deathRow;
-        protected List<Pair<GameEntity, String>> birthRow;
+        protected Dictionary<string, List<bEntity>> entities;
+        protected Dictionary<bEntity, string> categories;
+        protected List<bEntity> deathRow;
+        protected List<Pair<bEntity, String>> birthRow;
 
-        public GameState()
+        public bGameState()
         {
-            entities = new Dictionary<string, List<GameEntity>>();
-            categories = new Dictionary<GameEntity, string>();
-            deathRow = new List<GameEntity>();
-            birthRow = new List<Pair<GameEntity, String>>();
+            entities = new Dictionary<string, List<bEntity>>();
+            categories = new Dictionary<bEntity, string>();
+            deathRow = new List<bEntity>();
+            birthRow = new List<Pair<bEntity, String>>();
         }
 
         virtual public void init()
@@ -43,13 +43,13 @@ namespace BananaEngine
         {
         }
 
-        virtual public bool add(GameEntity ge, String category)
+        virtual public bool add(bEntity ge, String category)
         {
-            birthRow.Add(new Pair<GameEntity, String>(ge, category));
+            birthRow.Add(new Pair<bEntity, String>(ge, category));
             return true;
         }
 
-        virtual protected bool _add(GameEntity e, String category)
+        virtual protected bool _add(bEntity e, String category)
         {
             // Store container list
             categories[e] = category;
@@ -60,44 +60,44 @@ namespace BananaEngine
             return true;
         }
 
-        virtual public void remove(GameEntity e)
+        virtual public void remove(bEntity e)
         {
             deathRow.Add(e);
         }
 
-        virtual public void actuallyRemove(GameEntity e)
+        virtual public void actuallyRemove(bEntity e)
         {
             String c = categories[e];
             if (c != null)
                 entities[c].Remove(e);
         }
 
-        virtual public bool collides(GameEntity e, string[] categories, Func<GameEntity, GameEntity, bool> condition = null)
+        virtual public bool collides(bEntity e, string[] categories, Func<bEntity, bEntity, bool> condition = null)
         {
             foreach (string category in categories)
                 if (entities[category] != null)
-                    foreach (GameEntity ge in entities[category])
+                    foreach (bEntity ge in entities[category])
                         if (ge != e && ge.collidable && e.collides(ge) && (condition == null || condition(e, ge)))
                             return true;
             return false;
         }
 
-        virtual public GameEntity instanceCollision(GameEntity e, string category, string attr = null, Func<GameEntity, GameEntity, bool> condition = null)
+        virtual public bEntity instanceCollision(bEntity e, string category, string attr = null, Func<bEntity, bEntity, bool> condition = null)
         {
             if (entities[category] != null)
-                foreach (GameEntity ge in entities[category])
+                foreach (bEntity ge in entities[category])
                     if (ge != e && ge.collidable && e.collides(ge) && (condition == null || condition(e, ge)))
                         if (attr == null || ge.hasAttribute(attr))
                             return ge;
             return null;
         }
 
-        virtual public List<GameEntity> instancesCollision(GameEntity e, string category, string attr = null)
+        virtual public List<bEntity> instancesCollision(bEntity e, string category, string attr = null)
         {
-            List<GameEntity> result = new List<GameEntity>();
+            List<bEntity> result = new List<bEntity>();
 
             if (entities[category] != null)
-                foreach (GameEntity ge in entities[category])
+                foreach (bEntity ge in entities[category])
                     if (ge != e && ge.collidable && e.collides(ge))
                         if (attr == null || ge.hasAttribute(attr))
                             result.Add(ge);
@@ -105,11 +105,11 @@ namespace BananaEngine
             return result;
         }
 
-        virtual public GameEntity find(int id)
+        virtual public bEntity find(int id)
         {
             foreach (String key in entities.Keys)
             {
-                foreach (GameEntity e in entities[key])
+                foreach (bEntity e in entities[key])
                 {
                     if (e.id == id)
                         return e;
@@ -124,14 +124,14 @@ namespace BananaEngine
             int count = 0;
             foreach (String key in entities.Keys)
             {
-                foreach (GameEntity e in entities[key])
+                foreach (bEntity e in entities[key])
                     if (target.IsInstanceOfType(e))
                         count += 1;
             }
             return count;
         }
 
-        virtual public bool isInstanceInView(GameEntity e)
+        virtual public bool isInstanceInView(bEntity e)
         {
             // TODO: Handle invisible and not managed by world entities
             return true;

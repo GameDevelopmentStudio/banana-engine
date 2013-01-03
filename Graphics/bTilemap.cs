@@ -6,9 +6,9 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace BananaEngine.Graphics
+namespace bEngine.Graphics
 {
-    public class Tilemap : Graphic
+    public class bTilemap : bGraphic
     {
         public int tileWidth { get; set; }
         public int tileHeight { get; set; }
@@ -18,7 +18,7 @@ namespace BananaEngine.Graphics
         public Tileset tileset;
         int[,] tiles;
 
-        public Tilemap(int width, int height, int tileWidth, int tileHeight, Texture2D source)
+        public bTilemap(int width, int height, int tileWidth, int tileHeight, Texture2D source)
         {
             this.width = width;
             this.height = height;

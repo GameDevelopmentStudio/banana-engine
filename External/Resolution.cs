@@ -17,9 +17,9 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace BananaEngine
+namespace bEngine
 {
-    public static class Resolution
+    static class Resolution
     {
         static private GraphicsDeviceManager _Device = null;
 
@@ -44,7 +44,6 @@ namespace BananaEngine
             _dirtyMatrix = true;
             ApplyResolutionSettings();
         }
-
 
         static public Matrix getTransformationMatrix()
         {
