@@ -58,7 +58,7 @@ namespace bEngine
 
         virtual public void render(GameTime dt, SpriteBatch sb)
         {
-            if (bGame.DEBUG)
+            if (bConfig.DEBUG)
             {
                 mask.render(sb);
                 sb.DrawString(game.gameFont, ""+id, new Vector2(pos.X, pos.Y - 8), color);

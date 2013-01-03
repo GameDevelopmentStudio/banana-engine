@@ -70,7 +70,7 @@ namespace bEngine
 
         public override void render(Microsoft.Xna.Framework.Graphics.SpriteBatch sb)
         {
-            if (bGame.DEBUG)
+            if (bConfig.DEBUG)
             {
                 Rectangle r = new Rectangle(0, 0, tileWidth, tileHeight);
                 for (int xx = 0; xx < columns; xx++)

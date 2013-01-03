@@ -15,9 +15,6 @@ namespace bEngine
 {
     public class bGame : Microsoft.Xna.Framework.Game
     {
-        // Debug variables
-        public static bool DEBUG = false;
-
         public GraphicsDeviceManager graphics;
         public SpriteBatch spriteBatch;
 
@@ -121,7 +118,7 @@ namespace bEngine
             }
 
             if (input.pressed("DEBUG"))
-                DEBUG = !DEBUG;
+                bConfig.DEBUG = !bConfig.DEBUG;
 				
 				
 			update(gameTime);

@@ -207,7 +207,7 @@ namespace bEngine.Graphics
         {
             base.render(sb, position);
             // if debug, paint rectangle above
-            if (bGame.DEBUG)
+            if (bConfig.DEBUG)
             {
                 mask.render(sb, game, debugColor);
             }

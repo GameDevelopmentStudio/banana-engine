@@ -101,6 +101,7 @@
     <Compile Include="bMask.cs" />
     <Compile Include="bMaskList.cs" />
     <Compile Include="bSolidGrid.cs" />
+    <Compile Include="bConfig.cs" />
     <Compile Include="External\Resolution.cs" />
     <Compile Include="Graphics\bDummyRect.cs" />
     <Compile Include="Graphics\bGraphic.cs" />
