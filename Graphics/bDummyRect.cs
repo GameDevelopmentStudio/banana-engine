@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace bEngine.Graphics
 {
-    class bDummyRect
+    public class bDummyRect
     {
         private static bDummyRect instance;
         private Texture2D texture;

@@ -151,10 +151,14 @@ namespace bEngine
             GraphicsDevice.Clear(bgColor);
 
             render(gameTime);
-            // Render world
-            world.render(gameTime, spriteBatch, matrix);
 
+            // Render world
+            if (world != null)
+            
+                world.render(gameTime, spriteBatch, matrix);
+            
             spriteBatch.End();
+
             base.Draw(gameTime);
         }
 
@@ -169,6 +173,7 @@ namespace bEngine
             newWorld.init();
         }
 
+        // Screenshot generation function
         public int count = 0;
         public void screenshot()
         {
