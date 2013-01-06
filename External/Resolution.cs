@@ -19,7 +19,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace bEngine
 {
-    static class Resolution
+    public static class Resolution
     {
         static private GraphicsDeviceManager _Device = null;
 
