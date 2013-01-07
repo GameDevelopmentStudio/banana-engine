@@ -18,6 +18,10 @@ namespace bEngine
         protected KeyboardState oldKeyState;
         public KeyboardState currentKeyState;
 
+        protected float joystickDeadzone = 0.4f;
+        public float getJoystickDeadzone() { return joystickDeadzone; }
+        public void setJoystickDeadzone(float value) { joystickDeadzone = value; }
+
         public bInput()
         {
             currentPadState = GamePad.GetState(PlayerIndex.One);
@@ -159,25 +163,25 @@ namespace bEngine
 
         public bool left()
         {
-            return currentPadState.ThumbSticks.Left.X < -0.3 ||
+            return currentPadState.ThumbSticks.Left.X < -joystickDeadzone ||
                 currentKeyState.IsKeyDown(Keys.Left);
         }
 
         public bool right()
         {
-            return currentPadState.ThumbSticks.Left.X > 0.3 ||
+            return currentPadState.ThumbSticks.Left.X > joystickDeadzone ||
                 currentKeyState.IsKeyDown(Keys.Right);
         }
 
         public bool up()
         {
-            return currentPadState.ThumbSticks.Left.Y > 0.3 ||
+            return currentPadState.ThumbSticks.Left.Y > joystickDeadzone ||
                 currentKeyState.IsKeyDown(Keys.Up);
         }
 
         public bool down()
         {
-            return currentPadState.ThumbSticks.Left.Y < -0.3 ||
+            return currentPadState.ThumbSticks.Left.Y < -joystickDeadzone ||
                 currentKeyState.IsKeyDown(Keys.Down);
         }
     }
