@@ -109,6 +109,8 @@
     <Compile Include="Graphics\bStamp.cs" />
     <Compile Include="Graphics\bTilemap.cs" />
     <Compile Include="Helpers\Constants.cs" />
+    <Compile Include="bPair.cs" />
+    <Compile Include="Helpers\Utils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

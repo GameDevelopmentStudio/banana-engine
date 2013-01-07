@@ -73,6 +73,9 @@ namespace bEngine.Graphics
 
         override public void render(SpriteBatch sb, Vector2 position)
         {
+            // Avoid crashing if no animation is currently set
+            if (currentAnim == null)
+                return;
             Rectangle to = new Rectangle((int) position.X, (int) position.Y, spriteWidth, spriteHeight);
             sb.Draw(image, to, getFrame(currentAnim.frame), color, 0, Vector2.Zero, (flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None), 0);
         }
