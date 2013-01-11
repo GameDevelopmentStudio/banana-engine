@@ -16,6 +16,8 @@ namespace bEngine
     {
         public bMask[] masks;
 
+        public bool flipped;
+
         public bMaskList(bMask[] masks, int x, int y)
             : base(0, 0, 0, 0)
         {
@@ -51,6 +53,9 @@ namespace bEngine
 
             this.x = x;
             this.y = y;
+
+            // default values
+            flipped = false;
         }
 
         public static new bMask MaskFromFile(StreamReader sr, string src = "", int id = -1)
@@ -113,8 +118,8 @@ namespace bEngine
                 foreach (bMask mask in masks)
                 {
                     // lazy (x,y) update
-                    mask.x = rect.X - offsetx;
-                    mask.y = rect.Y - offsety;
+                    updateSubmask(mask);
+                    
                     if (mask.collides(other))
                         return true;
                 }
@@ -128,10 +133,30 @@ namespace bEngine
             foreach (bMask mask in masks)
             {
                 // lazy (x,y) update
-                mask.x = rect.X - offsetx;
-                mask.y = rect.Y - offsety;
+                updateSubmask(mask);
+
                 mask.render(sb, game, color);
             }
+        }
+
+        public void updateSubmask(bMask mask)
+        {
+            // fix internal masks offsets
+
+            if (!flipped)
+            {
+                // x origin is the same as the father's (added with offsetx in the x property)
+                mask.x = rect.X - offsetx;
+            }
+            else
+            {
+                // x origin is flipped within the father's limit (a bit tricky)
+                int maskoffsetx = mask.offsetx - offsetx;
+                mask.x = rect.X + w - maskoffsetx - mask.w - mask.offsetx;
+            }
+
+            // y origin is the same as unflipped x (for now)
+            mask.y = rect.Y - offsety;
         }
     }
 }
