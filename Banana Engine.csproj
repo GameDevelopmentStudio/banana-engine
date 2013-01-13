@@ -7,7 +7,7 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BananaEngine</RootNamespace>
+    <RootNamespace>bEngine</RootNamespace>
     <AssemblyName>Banana Engine</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
@@ -110,6 +110,7 @@
     <Compile Include="Graphics\bTilemap.cs" />
     <Compile Include="Helpers\Constants.cs" />
     <Compile Include="bPair.cs" />
+    <Compile Include="Helpers\Transitions\Transition.cs" />
     <Compile Include="Helpers\Utils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

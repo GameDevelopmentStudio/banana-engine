@@ -126,7 +126,7 @@ namespace bEngine
 
         virtual public void render(SpriteBatch sb)
         {
-            sb.Draw(gfx, rect, rect, Color.Purple);
+            sb.Draw(gfx, rect, rect, Color.Plum);
         }
 
         virtual public void render(SpriteBatch sb, bGame game, Color color)

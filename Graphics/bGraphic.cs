@@ -12,6 +12,11 @@ namespace bEngine.Graphics
     {
         public int width = 0, height = 0;
         public Color color = Color.White;
+        public float alpha 
+        { 
+            get { return color.A / 256; } 
+            set { color.A = (byte) (value*256); } 
+        }
 
         virtual public void render(SpriteBatch sb, int x, int y)
         {

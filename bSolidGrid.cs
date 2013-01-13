@@ -81,7 +81,7 @@ namespace bEngine
                             r.X = x + xx * tileWidth;
                             r.Y = y + yy * tileHeight;
 
-                            sb.Draw(gfx, r, Color.Pink);
+                            sb.Draw(gfx, r, Color.PowderBlue);
                         }
                     }
             }

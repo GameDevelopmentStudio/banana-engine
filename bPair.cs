@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace BananaEngine
+namespace bEngine
 {
-    class Pair<T1, T2>
+    public class Pair<T1, T2>
     {
-        T1 first { get; set; }
-        T2 second { get; set; }
+        public T1 first { get; set; }
+        public T2 second { get; set; }
 
         public Pair(T1 first, T2 second)
         {

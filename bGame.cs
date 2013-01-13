@@ -11,6 +11,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
+using bEngine.Helpers.Transitions;
+
 namespace bEngine
 {
     public class bGame : Microsoft.Xna.Framework.Game
@@ -31,6 +33,11 @@ namespace bEngine
 
         // Gamestate
         public bGameState world;
+        public bool requestedWorldChange = false;
+        public Transition requestedTransition = null;
+        public bGameState nextWorld = null;
+        // Gamestate transitions
+        protected Transition gamestateTransition = null;
 
         public bGame()
         {
@@ -124,9 +131,41 @@ namespace bEngine
 
         protected override void Update(GameTime gameTime)
         {
+            // Handle gamestate change
+            bool newWorldThisStep = false;
+            // Change if requested
+            if (requestedWorldChange || gamestateTransition != null)
+            {
+                // Init new gamestate transition
+                if (gamestateTransition == null)
+                {
+                    gamestateTransition = requestedTransition;
+                }
+                else if (gamestateTransition.expectingWorldChange())
+                {
+                    actuallyChangeWorld(nextWorld);
+                    newWorldThisStep = true;
+                    // Notify
+                    gamestateTransition.worldChanged();
+                }
+                else if (gamestateTransition.finished())
+                {
+                    gamestateTransition = null;
+                }
+                else
+                {
+                    gamestateTransition.update();
+                }
+
+                if (!newWorldThisStep)
+                    return;
+            }
+
             // Control time flow (30fps)
             timeSinceLastUpdate += gameTime.ElapsedGameTime.TotalMilliseconds;
-            if (timeSinceLastUpdate < millisecondsPerFrame)
+            // Update if timer allows or a the gamestate is new and needs to perform
+            // its inital step
+            if (!newWorldThisStep && (timeSinceLastUpdate < millisecondsPerFrame))
                 return;
             timeSinceLastUpdate = 0;
 
@@ -171,21 +210,59 @@ namespace bEngine
             // Render world if available
             if (world != null)
                 world.render(gameTime, spriteBatch, matrix);
+
+            // Transition
+            if (gamestateTransition != null)
+                gamestateTransition.render(spriteBatch);
             
             spriteBatch.End();
 
             base.Draw(gameTime);
         }
 
+        public virtual Transition defaultTransition()
+        {
+            return new NilTransition(this);
+        }
+
         public void changeWorld(bGameState newWorld)
         {
-            if (world != null)
-                world.end();
+            changeWorld(newWorld, defaultTransition());
+        }
 
-            world = newWorld;
-            world.game = this;
+        public void changeWorld(bGameState newWorld, Transition transition)
+        {
+            if (world == null)
+                actuallyChangeWorld(newWorld);
+            else
+            {
+                nextWorld = newWorld;
+                requestedWorldChange = true;
+                requestedTransition = transition;
+            }
+        }
 
-            newWorld.init();
+        public void actuallyChangeWorld(bGameState newWorld)
+        {
+            if (newWorld != null)
+            {
+                if (world != null)
+                    world.end();
+
+                world = newWorld;
+                world.game = this;
+
+                newWorld.init();
+
+                requestedWorldChange = false;
+                nextWorld = null;
+            }
+            else
+            {
+                Console.WriteLine("An invalid attemp to change world occured:");
+                Console.WriteLine("Request: " + (requestedWorldChange ? "issued " : "not issued; ") +
+                                  "Valid instance: " + ((nextWorld != null) ? "yes" : "no"));
+            }
         }
 
         // Screenshot generation function
