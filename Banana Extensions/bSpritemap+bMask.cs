@@ -35,7 +35,25 @@ namespace bEngine.Graphics
         public bMask mask
         {
             set { currentMask = value; }
-            get { currentMask = masks[currentAnim.frame]; return currentMask; }
+            get 
+            { 
+                currentMask = masks[currentAnim.frame];
+                //if (!flipped)
+                {
+                    return currentMask;
+                }
+
+                int actualxoffset = currentMask.offsetx;//spriteWidth - currentMask.offsetx - currentMask.w;
+                int actualyoffset = currentMask.offsety;
+                bMask actualMask = new bMask(currentMask.x - currentMask.offsetx,
+                                             currentMask.y - currentMask.offsety,
+                                             currentMask.w,
+                                             currentMask.h,
+                                             actualxoffset,
+                                             actualyoffset);
+                                             
+                return actualMask; 
+            }
 
         }
         protected bMask currentMask;
@@ -191,13 +209,32 @@ namespace bEngine.Graphics
         {
             base.update();
 
-            mask.update(x, y);
+            // Change mask offset if flipped
+            int mx = x;
+            if (flipped)
+            {
+                mx += spriteWidth - 2 * mask.offsetx - mask.w;
+            }
+
+            if (mask.GetType() == typeof(bMaskList))
+            {
+                // lazy update for mask lists (so that they can flip their inner masks)
+                ((bMaskList)mask).flipped = flipped;
+            }
+                
+            mask.update(mx, y);
+            
             foreach (bBodyPart bodyPart in attached.Values)
             {
                 if (bodyPart.bodyPart != null)
                 {
-                    int bodyX = x + bodyPart.pos[currentAnim.frameIndex].first + bodyPart.xoffset;
+                    // lazy update of common params
+                    bodyPart.bodyPart.flipped = flipped;
+
+                    // inner offsets are different in flipped (similar than with masks, but different)
+                    int bodyX = (int) bodyPartxoffset(bodyPart, (float) x);
                     int bodyY = y + bodyPart.pos[currentAnim.frameIndex].second + bodyPart.yoffset;
+
                     bodyPart.bodyPart.update(bodyX, bodyY);
                 }
             }
@@ -216,11 +253,28 @@ namespace bEngine.Graphics
             {
                 if (bodyPart.bodyPart != null)
                 {
+                    // lazy update of common params
+                    bodyPart.bodyPart.flipped = flipped;
+
                     Vector2 tmpPos = new Vector2();
-                    tmpPos.X = position.X + bodyPart.pos[currentAnim.frameIndex].first + bodyPart.xoffset;
+                    tmpPos.X = bodyPartxoffset(bodyPart, position.X);
                     tmpPos.Y = position.Y + bodyPart.pos[currentAnim.frameIndex].second + bodyPart.yoffset;
+
                     bodyPart.bodyPart.render(sb, tmpPos);
                 }
+            }
+        }
+
+        float bodyPartxoffset(bBodyPart bodyPart, float x)
+        {
+            // gets natural or mirrored offset
+            if (!bodyPart.bodyPart.flipped)
+            {
+                return x + bodyPart.pos[currentAnim.frameIndex].first + bodyPart.xoffset;
+            }
+            else
+            {
+                return x + spriteWidth - bodyPart.pos[currentAnim.frameIndex].first - bodyPart.xoffset - bodyPart.bodyPart.spriteWidth;
             }
         }
     }
