@@ -18,7 +18,7 @@ namespace bEngine.Graphics
         public int yoffset;
 
         // actual pos fro every frame
-        public Pair<int, int>[] pos;
+        public Point[] pos;
 
         // attached body
         public bBody bodyPart;
@@ -38,25 +38,24 @@ namespace bEngine.Graphics
             get 
             { 
                 currentMask = masks[currentAnim.frame];
-                //if (!flipped)
-                {
-                    return currentMask;
-                }
-
-                int actualxoffset = currentMask.offsetx;//spriteWidth - currentMask.offsetx - currentMask.w;
-                int actualyoffset = currentMask.offsety;
-                bMask actualMask = new bMask(currentMask.x - currentMask.offsetx,
-                                             currentMask.y - currentMask.offsety,
-                                             currentMask.w,
-                                             currentMask.h,
-                                             actualxoffset,
-                                             actualyoffset);
-                                             
-                return actualMask; 
+                return currentMask;
             }
 
         }
         protected bMask currentMask;
+
+        public Point[] hotspots;
+        public Point hotspot
+        {
+            set { currentHotspot = value; }
+            get
+            {
+                currentHotspot = hotspots[currentAnim.frame];
+                return currentHotspot;
+            }
+
+        }
+        protected Point currentHotspot;
 
         public bBody(bGame game, string imageSrc, int spriteWidth, int spriteHeight)
             : base(game.Content.Load<Texture2D>(imageSrc), spriteWidth, spriteHeight)
@@ -89,6 +88,7 @@ namespace bEngine.Graphics
                     {
                         msize = Convert.ToInt32(line.Split(Constants.bCharSeparators, StringSplitOptions.RemoveEmptyEntries)[0]);
                         masks = new bMask[msize];
+                        hotspots = new Point[msize];
                     }
                     catch (Exception e)
                     {
@@ -115,7 +115,7 @@ namespace bEngine.Graphics
                             string id = line.Split(Constants.bCharSeparators, StringSplitOptions.RemoveEmptyEntries)[0];
                             bBodyPart bodyPart = new bBodyPart();
                             bodyPart.bodyPart = null;  // body is initially non-existent
-                            bodyPart.pos = new Pair<int, int>[msize];  // as many positions as frames
+                            bodyPart.pos = new Point[msize];  // as many positions as frames
                             attached.Add(id, bodyPart);
                             naps++;
                         }
@@ -139,8 +139,28 @@ namespace bEngine.Graphics
                     }                    
 
                     // fill bMask list
-                    while (nmasks < msize && line != null)
+                    while (nmasks < msize)
                     {
+                        // Read frame hotspot
+                        if ((line = sr.ReadLine()) == null) return false;
+                        try
+                        {
+                            string[] items = line.Split(Constants.bCharSeparators, StringSplitOptions.RemoveEmptyEntries);
+                            hotspots[nmasks] = new Point(Convert.ToInt32(items[0]), Convert.ToInt32(items[1]));
+                        }
+                        catch (Exception e)
+                        {
+                            if (e is FormatException || e is OverflowException || e is IndexOutOfRangeException)
+                            {
+                                Console.WriteLine("Could not read masks from file " + src + ", hotspot attribute has errors: " + e.Message);
+                                return false;
+                            }
+                            else
+                                // not our division
+                                throw;
+                        }
+
+                        // Read frame mask
                         bMask mask = bMask.MaskFromFile(sr, src, nmasks);
                         if (mask != null)
                             masks[nmasks] = mask;
@@ -168,7 +188,7 @@ namespace bEngine.Graphics
                 {
                     string[] items = line.Split(Constants.bCharSeparators, StringSplitOptions.RemoveEmptyEntries);
                     string id = items[0];
-                    attached[id].pos[frame] = new Pair<int, int>(Convert.ToInt32(items[1]), Convert.ToInt32(items[2]));
+                    attached[id].pos[frame] = new Point(Convert.ToInt32(items[1]), Convert.ToInt32(items[2]));
 
                     naps++;
                 }
@@ -233,7 +253,7 @@ namespace bEngine.Graphics
 
                     // inner offsets are different in flipped (similar than with masks, but different)
                     int bodyX = (int) bodyPartxoffset(bodyPart, (float) x);
-                    int bodyY = y + bodyPart.pos[currentAnim.frameIndex].second + bodyPart.yoffset;
+                    int bodyY = y + bodyPart.pos[currentAnim.frameIndex].Y + bodyPart.yoffset - bodyPart.bodyPart.hotspot.Y;
 
                     bodyPart.bodyPart.update(bodyX, bodyY);
                 }
@@ -258,7 +278,7 @@ namespace bEngine.Graphics
 
                     Vector2 tmpPos = new Vector2();
                     tmpPos.X = bodyPartxoffset(bodyPart, position.X);
-                    tmpPos.Y = position.Y + bodyPart.pos[currentAnim.frameIndex].second + bodyPart.yoffset;
+                    tmpPos.Y = position.Y + bodyPart.pos[currentAnim.frameIndex].Y + bodyPart.yoffset - bodyPart.bodyPart.hotspot.Y;
 
                     bodyPart.bodyPart.render(sb, tmpPos);
                 }
@@ -270,11 +290,11 @@ namespace bEngine.Graphics
             // gets natural or mirrored offset
             if (!bodyPart.bodyPart.flipped)
             {
-                return x + bodyPart.pos[currentAnim.frameIndex].first + bodyPart.xoffset;
+                return x + bodyPart.pos[currentAnim.frameIndex].X + bodyPart.xoffset - bodyPart.bodyPart.hotspot.X;
             }
             else
             {
-                return x + spriteWidth - bodyPart.pos[currentAnim.frameIndex].first - bodyPart.xoffset - bodyPart.bodyPart.spriteWidth;
+                return x + spriteWidth - bodyPart.pos[currentAnim.frameIndex].X - bodyPart.xoffset + bodyPart.bodyPart.hotspot.X - bodyPart.bodyPart.spriteWidth;
             }
         }
     }
