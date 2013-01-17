@@ -29,7 +29,8 @@ namespace bEngine.Graphics
         protected bGame game;
         protected Color debugColor;
 
-        public Dictionary<string, bBodyPart> attached; 
+        public Dictionary<string, bBodyPart> attached;
+        public string name;
 
         public bMask[] masks;
         public bMask mask
@@ -66,6 +67,9 @@ namespace bEngine.Graphics
             debugColor = Color.FromNonPremultiplied(Constants.bRandom.Next(0, 255), Constants.bRandom.Next(0, 255), Constants.bRandom.Next(0, 255), 150);
 
             attached = new Dictionary<string, bBodyPart>();
+
+            // default name
+            name = "";
 
             string path = "Assets" + "\\" + imageSrc + ".cfg";
             parseMasks(path);
@@ -223,7 +227,41 @@ namespace bEngine.Graphics
             }
         }
 
-        // TODO: collides method(s)
+        public Pair<bBody, bBody>[] collides(bBody other)
+        {
+            List<Pair<bBody, bBody>> collisionPairs = new List<Pair<bBody, bBody>>();
+
+            // compute lists of both bodies
+            bBody[] selfBodies = toArray();
+            bBody[] otherBodies = other.toArray();
+        
+            foreach (bBody selfBody in selfBodies)
+                foreach (bBody otherBody in otherBodies)
+                {
+                    if (selfBody.mask.collides(otherBody.mask))
+                        collisionPairs.Add(new Pair<bBody, bBody>(selfBody, otherBody));
+                }
+
+            return collisionPairs.ToArray();
+        }
+
+        public bBody[] toArray()
+        {
+            List<bBody> bodies = new List<bBody>();
+
+            // Visit root
+            bodies.Add(this);
+            foreach (bBodyPart bodyPart in attached.Values)
+            {
+                // Visit
+                bodies.Add(bodyPart.bodyPart);
+
+                // Continue traversing
+                bodies.Concat(bodies.ToArray());
+            }
+
+            return bodies.ToArray();
+        }
 
         public void update(int x, int y)
         {
