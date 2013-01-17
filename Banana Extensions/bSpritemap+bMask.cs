@@ -291,7 +291,7 @@ namespace bEngine.Graphics
 
                     // inner offsets are different in flipped (similar than with masks, but different)
                     int bodyX = (int) bodyPartxoffset(bodyPart, (float) x);
-                    int bodyY = y + bodyPart.pos[currentAnim.frameIndex].Y + bodyPart.yoffset - bodyPart.bodyPart.hotspot.Y;
+                    int bodyY = y + bodyPart.pos[currentAnim.frame].Y + bodyPart.yoffset - bodyPart.bodyPart.hotspot.Y;
 
                     bodyPart.bodyPart.update(bodyX, bodyY);
                 }
@@ -316,7 +316,7 @@ namespace bEngine.Graphics
 
                     Vector2 tmpPos = new Vector2();
                     tmpPos.X = bodyPartxoffset(bodyPart, position.X);
-                    tmpPos.Y = position.Y + bodyPart.pos[currentAnim.frameIndex].Y + bodyPart.yoffset - bodyPart.bodyPart.hotspot.Y;
+                    tmpPos.Y = position.Y + bodyPart.pos[currentAnim.frame].Y + bodyPart.yoffset - bodyPart.bodyPart.hotspot.Y;
 
                     bodyPart.bodyPart.render(sb, tmpPos);
                 }
@@ -328,11 +328,11 @@ namespace bEngine.Graphics
             // gets natural or mirrored offset
             if (!bodyPart.bodyPart.flipped)
             {
-                return x + bodyPart.pos[currentAnim.frameIndex].X + bodyPart.xoffset - bodyPart.bodyPart.hotspot.X;
+                return x + bodyPart.pos[currentAnim.frame].X + bodyPart.xoffset - bodyPart.bodyPart.hotspot.X;
             }
             else
             {
-                return x + spriteWidth - bodyPart.pos[currentAnim.frameIndex].X - bodyPart.xoffset + bodyPart.bodyPart.hotspot.X - bodyPart.bodyPart.spriteWidth;
+                return x + spriteWidth - bodyPart.pos[currentAnim.frame].X - bodyPart.xoffset + bodyPart.bodyPart.hotspot.X - bodyPart.bodyPart.spriteWidth;
             }
         }
     }
