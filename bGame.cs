@@ -29,6 +29,8 @@ namespace bEngine
 
         // Resolution
         protected int width, height;
+        public int getWith() { return width; }
+        public int getHeight() { return height; }
         protected uint horizontalZoom, verticalZoom;
 
         // Gamestate

@@ -118,10 +118,11 @@ namespace bEngine
 
         virtual public bool collides(bMask other)
         {
-            if (other is bSolidGrid)
-                return other.collides(this);
-            else
+            // is exactly bMask
+            if (other.GetType() == typeof(bMask))
                 return rect.Intersects(other.rect);
+            else
+                return other.collides(this);
         }
 
         virtual public void render(SpriteBatch sb)

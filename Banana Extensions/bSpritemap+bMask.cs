@@ -263,11 +263,9 @@ namespace bEngine.Graphics
             return bodies.ToArray();
         }
 
-        public void update(int x, int y)
-        {
-            base.update();
 
-            // Change mask offset if flipped
+        public void updateFlippableMask(int x, int y)
+        {
             int mx = x;
             if (flipped)
             {
@@ -279,8 +277,16 @@ namespace bEngine.Graphics
                 // lazy update for mask lists (so that they can flip their inner masks)
                 ((bMaskList)mask).flipped = flipped;
             }
-                
+
             mask.update(mx, y);
+        }
+
+        public void update(int x, int y)
+        {
+            base.update();
+
+            // Change mask offset if flipped
+            updateFlippableMask(x, y);
             
             foreach (bBodyPart bodyPart in attached.Values)
             {
