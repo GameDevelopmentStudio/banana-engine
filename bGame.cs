@@ -22,6 +22,7 @@ namespace bEngine
 
         public static bInput input = new bInput();
         public SpriteFont gameFont;
+        public Color bgColor;
 
         // Time flow
         public double millisecondsPerFrame = 17;
@@ -62,6 +63,8 @@ namespace bEngine
             height = 240;
 
             Content.RootDirectory = "Content";
+
+            bgColor = Color.CornflowerBlue;
         }
 
         protected override void Initialize()
@@ -204,7 +207,6 @@ namespace bEngine
                     null,
                     matrix);
 
-            Color bgColor = Color.CornflowerBlue;
             GraphicsDevice.Clear(bgColor);
 
             render(gameTime);
