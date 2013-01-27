@@ -13,6 +13,9 @@ namespace bEngine.Graphics
 {
     public class bBodyPart
     {
+        // render ordering
+        public int zindex = 0;
+
         // translation transform
         public int xoffset;
         public int yoffset;
@@ -313,7 +316,9 @@ namespace bEngine.Graphics
                 mask.render(sb, game, debugColor);
             }
 
-            foreach (bBodyPart bodyPart in attached.Values)
+            // SORT BODIES BY ZINDEX
+
+            foreach (bBodyPart bodyPart in attached.Values.OrderBy(x => x.zindex))
             {
                 if (bodyPart.bodyPart != null)
                 {
