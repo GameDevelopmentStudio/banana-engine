@@ -307,21 +307,30 @@ namespace bEngine.Graphics
             }
         }
 
-        public override void render(SpriteBatch sb, Vector2 position)
+        public void renderSelf(SpriteBatch sb, Vector2 position)
         {
+            // HACK (doing it here because it's easier)
             base.render(sb, position);
             // if debug, paint rectangle above
             if (bConfig.DEBUG)
             {
                 mask.render(sb, game, debugColor);
             }
-
-            // SORT BODIES BY ZINDEX
-
+        }
+        public override void render(SpriteBatch sb, Vector2 position)
+        {
+            // Render bodies according to their zindex (0 is main body)
+            bool renderedMainBody = false;
             foreach (bBodyPart bodyPart in attached.Values.OrderBy(x => x.zindex))
-            {
+            {   
                 if (bodyPart.bodyPart != null)
                 {
+                    if (bodyPart.zindex >= 0 && !renderedMainBody)
+                    {
+                        renderSelf(sb, position);
+                        renderedMainBody = true;
+                    }
+
                     // lazy update of common params
                     bodyPart.bodyPart.flipped = flipped;
 
@@ -332,6 +341,9 @@ namespace bEngine.Graphics
                     bodyPart.bodyPart.render(sb, tmpPos);
                 }
             }
+
+            if (!renderedMainBody)  // if there were no bodies
+                renderSelf(sb, position);
         }
 
         float bodyPartxoffset(bBodyPart bodyPart, float x)
