@@ -12,6 +12,8 @@ namespace bEngine
     {
         public bGame game;
 
+        public bool usesCamera;
+
         protected Dictionary<string, List<bEntity>> entities;
         protected Dictionary<bEntity, string> categories;
         protected List<bEntity> deathRow;
@@ -23,6 +25,8 @@ namespace bEngine
             categories = new Dictionary<bEntity, string>();
             deathRow = new List<bEntity>();
             birthRow = new List<Pair<bEntity, String>>();
+
+            usesCamera = false;
         }
 
         virtual public void init()
@@ -33,6 +37,26 @@ namespace bEngine
         virtual public void end()
         {
             Console.WriteLine("GameLevel end!");
+        }
+
+        virtual public void _update(GameTime dt)
+        {
+            /* Pre-step */
+
+            /* Step */
+            update(dt);
+
+            /* Post-step */
+            /* Remove flagged entities */
+            foreach (bEntity e in deathRow)
+            {
+                actuallyRemove(e);
+            }
+            deathRow.Clear();
+
+            foreach (Pair<bEntity, String> e in birthRow)
+                _add(e.first, e.second);
+            birthRow.Clear();
         }
 
         virtual public void update(GameTime dt)
@@ -69,7 +93,10 @@ namespace bEngine
         {
             String c = categories[e];
             if (c != null)
+            {
                 entities[c].Remove(e);
+                categories.Remove(e);
+            }
         }
 
         virtual public bool collides(bEntity e, string[] categories, Func<bEntity, bEntity, bool> condition = null)

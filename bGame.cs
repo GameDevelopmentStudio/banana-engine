@@ -178,7 +178,7 @@ namespace bEngine
 			
             // Update current world state (if available)
             if (world != null)
-                world.update(gameTime);
+                world._update(gameTime);
 
             // We shall let XNA have some fun, shan't we?
             base.Update(gameTime);
