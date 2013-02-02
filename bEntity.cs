@@ -5,6 +5,7 @@ using System.Text;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using bEngine.Graphics;
 
 namespace bEngine
 {
@@ -71,6 +72,10 @@ namespace bEngine
         }
 
         virtual public void onCollision(String type, bEntity other)
+        {
+        }
+
+        virtual public void onCollision(String type, bEntity other, Pair<bBody, bBody>[] collisionPairs)
         {
         }
 
