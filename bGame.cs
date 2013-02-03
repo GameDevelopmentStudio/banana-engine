@@ -287,7 +287,7 @@ namespace bEngine
 
             //pull the picture from the buffer 
             int[] backBuffer = new int[w * h];
-            GraphicsDevice.GetBackBufferData(backBuffer);
+            //GraphicsDevice.GetBackBufferData(backBuffer);
 
             //copy into a texture 
             Texture2D texture = new Texture2D(GraphicsDevice, w, h, false, GraphicsDevice.PresentationParameters.BackBufferFormat);
