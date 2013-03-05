@@ -105,6 +105,29 @@ namespace bEngine.Graphics
                 actualFrameIndex = currentFrameIndex; 
             }
         }
+        public int firstFrame
+        {
+            get
+            {
+                // If speed is positive, flow goes as usual
+                if (speed > 0)
+                    return 0;
+                // If speed is negative, flow is inversed (last frame is first frame and viceversa)
+                else
+                    return frames.Length - 1;
+            }
+        }
+        public int lastFrame
+        {
+            get
+            {
+                // Same logic as firstFrame here
+                if (speed > 0)
+                    return frames.Length - 1;
+                else
+                    return  0;
+            }
+        }
 
         protected int currentFrameIndex;
         protected float actualFrameIndex;
@@ -116,19 +139,24 @@ namespace bEngine.Graphics
             this.speed = speed;
             this.loop = loop;
 
-            currentFrameIndex = 0;
+            currentFrameIndex = firstFrame;
             currentFrame = frames[currentFrameIndex];
             finished = false;
             playing = false;
         }
 
-        virtual public void play(int from = 0)
+        virtual public void play(int from)
         {
             finished = false;
             playing = true;
             currentFrameIndex = from;
             currentFrame = frames[currentFrameIndex];
             actualFrameIndex = from;
+        }
+
+        virtual public void play()
+        {
+            play(firstFrame);
         }
 
         virtual public void pause()
@@ -152,24 +180,31 @@ namespace bEngine.Graphics
             if (playing && !finished)
             {
                 actualFrameIndex += speed;
-                if ((int)Math.Floor(actualFrameIndex) >= currentFrameIndex+1)
+                int firstFrame = this.firstFrame;
+                int lastFrame = this.lastFrame;
+
+                // if current frame is different than the one on the last step, we have advanced in the animation
+                if ( (int)Math.Floor(actualFrameIndex) != currentFrameIndex)
                 {
-                    // Next frame reached
-                    currentFrameIndex++;
+                    // Next frame reached (moving forward or backwards depending on the speed sign)
+                    int direction = Math.Sign(speed);
+                    currentFrameIndex += direction * 1;
                     actualFrameIndex = currentFrameIndex;
                     // Finished?
-                    if (currentFrameIndex >= frames.Length)
+                    // If flow is going forward, we are finished if currentFrame > lastFrame, currentFrame - lastFrame > 0
+                    // If flow is going backwards, we are finished if currentFrame < lastFrame, -1*(currentFrame - lastFrame) > 0
+                    if (direction * (currentFrameIndex - lastFrame) > 0)
                     {
                         if (loop)
                         {
-                            currentFrameIndex = 0;
+                            currentFrameIndex = firstFrame;
                             actualFrameIndex = currentFrameIndex;
                         }
                         else
                         {
                             playing = false;
                             finished = true;
-                            currentFrameIndex = frames.Length - 1;
+                            currentFrameIndex = lastFrame;
                         }
                     }
 
