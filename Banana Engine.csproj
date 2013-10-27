@@ -92,7 +92,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Banana Extensions\bSpritemap+bMask.cs" />
+    <Compile Include="Banana Extensions\bBody.cs" />
     <Compile Include="bCamera.cs" />
     <Compile Include="bEntity.cs" />
     <Compile Include="bGame.cs" />
@@ -115,6 +115,7 @@
     <Compile Include="Helpers\Utils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />
   <!--

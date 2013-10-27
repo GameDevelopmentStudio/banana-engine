@@ -30,7 +30,7 @@ namespace bEngine
 
         // Resolution
         protected int width, height;
-        public int getWith() { return width; }
+        public int getWidth() { return width; }
         public int getHeight() { return height; }
         public Rectangle getViewRectangle() { return new Rectangle(0, 0, width, height); }
         protected uint horizontalZoom, verticalZoom;
