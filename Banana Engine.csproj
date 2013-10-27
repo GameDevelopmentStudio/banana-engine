@@ -110,6 +110,7 @@
     <Compile Include="Graphics\bTilemap.cs" />
     <Compile Include="Helpers\Constants.cs" />
     <Compile Include="bPair.cs" />
+    <Compile Include="Helpers\MoreMath.cs" />
     <Compile Include="Helpers\Transitions\Transition.cs" />
     <Compile Include="Helpers\Utils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

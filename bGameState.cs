@@ -161,6 +161,7 @@ namespace bEngine
         virtual public bool isInstanceInView(bEntity e)
         {
             // TODO: Handle invisible and not managed by world entities
+
             return true;
         }
     }
