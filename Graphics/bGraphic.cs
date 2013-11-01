@@ -14,7 +14,7 @@ namespace bEngine.Graphics
         public Color color = Color.White;
         public float alpha 
         { 
-            get { return color.A / 256; } 
+            get { return color.A / 256.0f; } 
             set { color.A = (byte) (value*256); } 
         }
 
