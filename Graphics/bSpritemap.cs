@@ -21,8 +21,8 @@ namespace bEngine.Graphics
 
         int _width, _height;
 
-        public new int width { get { return spriteWidth; } }
-        public new int height { get { return spriteHeight; } }
+        public override int width { get { return spriteWidth; } }
+        public override int height { get { return spriteHeight; } }
 
         public bSpritemap(Texture2D image, int spriteWidth, int spriteHeight)
         {

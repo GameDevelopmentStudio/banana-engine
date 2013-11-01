@@ -122,7 +122,7 @@ namespace bEngine
             return collision;
         }
 
-        public Vector2 moveToContact(Vector2 to, String category, Func<bEntity, bEntity, bool> condition = null)
+        public virtual Vector2 moveToContact(Vector2 to, String category, Func<bEntity, bEntity, bool> condition = null)
         {
             Vector2 remnant = Vector2.Zero;
 

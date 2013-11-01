@@ -10,7 +10,9 @@ namespace bEngine.Graphics
 {
     public class bGraphic
     {
-        public int width = 0, height = 0;
+        int _width, _height;
+        public virtual int width { get { return _width; } set { _width = value; } }
+        public virtual int height { get { return _height; } set { _height = value; } }
         public Color color = Color.White;
         public float alpha 
         { 
