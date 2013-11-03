@@ -12,8 +12,8 @@ namespace bEngine
     {
         protected Dictionary<string, List<Object>> keys;
 
-        protected GamePadState oldPadState;
-        public GamePadState currentPadState;
+        Dictionary<PlayerIndex, GamePadState> oldPadStates;
+        Dictionary<PlayerIndex, GamePadState> currentPadStates;
         
         protected KeyboardState oldKeyState;
         public KeyboardState currentKeyState;
@@ -24,8 +24,14 @@ namespace bEngine
 
         public bInput()
         {
-            currentPadState = GamePad.GetState(PlayerIndex.One);
-            oldPadState = currentPadState;
+            // Get all pads 
+            currentPadStates = new Dictionary<PlayerIndex, GamePadState>();
+            oldPadStates = new Dictionary<PlayerIndex, GamePadState>();
+            foreach (PlayerIndex idx in  Enum.GetValues(typeof(PlayerIndex)))
+            {
+                currentPadStates[idx] = GamePad.GetState(idx);
+                oldPadStates[idx] = currentPadStates[idx];
+            }
 
             currentKeyState = Keyboard.GetState();
             oldKeyState = currentKeyState;
@@ -49,8 +55,11 @@ namespace bEngine
 
         public void update()
         {
-            oldPadState = currentPadState;
-            currentPadState = GamePad.GetState(PlayerIndex.One);
+            foreach (PlayerIndex idx in Enum.GetValues(typeof(PlayerIndex)))
+            {
+                oldPadStates[idx] = currentPadStates[idx];
+                currentPadStates[idx] = GamePad.GetState(idx);
+            }
 
             oldKeyState = currentKeyState;
             currentKeyState = Keyboard.GetState();
@@ -71,22 +80,22 @@ namespace bEngine
             return currentKeyState.IsKeyUp(key) && oldKeyState.IsKeyDown(key);
         }
 
-        public bool pressed(Buttons btn)
+        public bool pressed(Buttons btn, PlayerIndex idx = PlayerIndex.One)
         {
-            return currentPadState.IsButtonDown(btn) && oldPadState.IsButtonUp(btn);
+            return currentPadStates[idx].IsButtonDown(btn) && oldPadStates[idx].IsButtonUp(btn);
         }
 
-        public bool check(Buttons btn)
+        public bool check(Buttons btn, PlayerIndex idx = PlayerIndex.One)
         {
-            return currentPadState.IsButtonDown(btn);
+            return currentPadStates[idx].IsButtonDown(btn);
         }
 
-        public bool released(Buttons btn)
+        public bool released(Buttons btn, PlayerIndex idx = PlayerIndex.One)
         {
-            return currentPadState.IsButtonUp(btn) && oldPadState.IsButtonDown(btn);
+            return currentPadStates[idx].IsButtonUp(btn) && oldPadStates[idx].IsButtonDown(btn);
         }
 
-        public bool pressed(string id)
+        public bool pressed(string id, PlayerIndex idx = PlayerIndex.One)
         {
             List<Object> registeredKeys;
             keys.TryGetValue(id, out registeredKeys);
@@ -97,7 +106,7 @@ namespace bEngine
             foreach (Object btn in registeredKeys)
             {
                 if (btn is Buttons)
-                    pressed = currentPadState.IsButtonDown((Buttons)btn) && oldPadState.IsButtonUp((Buttons)btn);
+                    pressed = currentPadStates[idx].IsButtonDown((Buttons)btn) && oldPadStates[idx].IsButtonUp((Buttons)btn);
                 else if (btn is Keys)
                     pressed = currentKeyState.IsKeyDown((Keys)btn) && oldKeyState.IsKeyUp((Keys)btn);
                 else
@@ -112,7 +121,7 @@ namespace bEngine
             return false;
         }
 
-        public bool check(string id)
+        public bool check(string id, PlayerIndex idx = PlayerIndex.One)
         {
             List<Object> registeredKeys;
             keys.TryGetValue(id, out registeredKeys);
@@ -122,7 +131,7 @@ namespace bEngine
             foreach (Object btn in registeredKeys)
             {
                 if (btn is Buttons)
-                    pressed = currentPadState.IsButtonDown((Buttons)btn);
+                    pressed = currentPadStates[idx].IsButtonDown((Buttons)btn);
                 else if (btn is Keys)
                     pressed = currentKeyState.IsKeyDown((Keys)btn);
                 else
@@ -137,7 +146,7 @@ namespace bEngine
             return false;
         }
 
-        public bool released(string id)
+        public bool released(string id, PlayerIndex idx = PlayerIndex.One)
         {
             List<Object> registeredKeys;
             keys.TryGetValue(id, out registeredKeys);
@@ -146,7 +155,7 @@ namespace bEngine
             foreach (Object btn in registeredKeys)
             {
                 if (btn is Buttons)
-                    pressed = currentPadState.IsButtonUp((Buttons)btn) && currentPadState.IsButtonDown((Buttons)btn);
+                    pressed = currentPadStates[idx].IsButtonUp((Buttons)btn) && currentPadStates[idx].IsButtonDown((Buttons)btn);
                 else if (btn is Keys)
                     pressed = currentKeyState.IsKeyUp((Keys)btn) && currentKeyState.IsKeyDown((Keys)btn);
                 else
@@ -161,27 +170,27 @@ namespace bEngine
             return false;
         }
 
-        public bool left()
+        public bool left(PlayerIndex idx = PlayerIndex.One)
         {
-            return currentPadState.ThumbSticks.Left.X < -joystickDeadzone ||
+            return currentPadStates[idx].ThumbSticks.Left.X < -joystickDeadzone ||
                 currentKeyState.IsKeyDown(Keys.Left);
         }
 
-        public bool right()
+        public bool right(PlayerIndex idx = PlayerIndex.One)
         {
-            return currentPadState.ThumbSticks.Left.X > joystickDeadzone ||
+            return currentPadStates[idx].ThumbSticks.Left.X > joystickDeadzone ||
                 currentKeyState.IsKeyDown(Keys.Right);
         }
 
-        public bool up()
+        public bool up(PlayerIndex idx = PlayerIndex.One)
         {
-            return currentPadState.ThumbSticks.Left.Y > joystickDeadzone ||
+            return currentPadStates[idx].ThumbSticks.Left.Y > joystickDeadzone ||
                 currentKeyState.IsKeyDown(Keys.Up);
         }
 
-        public bool down()
+        public bool down(PlayerIndex idx = PlayerIndex.One)
         {
-            return currentPadState.ThumbSticks.Left.Y < -joystickDeadzone ||
+            return currentPadStates[idx].ThumbSticks.Left.Y < -joystickDeadzone ||
                 currentKeyState.IsKeyDown(Keys.Down);
         }
     }
