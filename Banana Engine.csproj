@@ -92,7 +92,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Banana Extensions\bBody.cs" />
+    <Compile Include="bBody.cs" />
     <Compile Include="bCamera.cs" />
     <Compile Include="bEntity.cs" />
     <Compile Include="bGame.cs" />
