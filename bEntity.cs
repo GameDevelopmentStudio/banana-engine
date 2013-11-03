@@ -90,15 +90,14 @@ namespace bEngine
             return world.collides(this, categories);
         }
 
-        virtual public bool placeMeeting(int x, int y, String category, Func<bEntity, bEntity, bool> condition = null)
+        virtual public bool placeMeeting(Vector2 position, String[] categories, Func<bEntity, bEntity, bool> condition = null)
         {
-            String[] c = { category };
             Vector2 old = this.pos;
 
-            this.pos = new Vector2(x, y);
+            this.pos = position;
             mask.update((int)pos.X, (int)pos.Y);
 
-            bool collision = world.collides(this, c, condition);
+            bool collision = world.collides(this, categories, condition);
 
             this.pos = old;
             mask.update((int)pos.X, (int)pos.Y);
@@ -108,18 +107,18 @@ namespace bEngine
 
         virtual public bool placeMeeting(Vector2 position, String category, Func<bEntity, bEntity, bool> condition = null)
         {
+            return placeMeeting(position, new String[] { category }, condition);
+        }
+
+        virtual public bool placeMeeting(int x, int y, String[] categories, Func<bEntity, bEntity, bool> condition = null)
+        {
+            return placeMeeting(new Vector2(x, y), categories, condition);
+        }
+
+        virtual public bool placeMeeting(int x, int y, String category, Func<bEntity, bEntity, bool> condition = null)
+        {
             String[] c = { category };
-            Vector2 old = this.pos;
-
-            this.pos = position;
-            mask.update((int) pos.X, (int) pos.Y);
-
-            bool collision = world.collides(this, c, condition);
-
-            this.pos = old;
-            mask.update((int)pos.X, (int)pos.Y);
-
-            return collision;
+            return placeMeeting(x, y, c, condition);
         }
 
         public virtual Vector2 moveToContact(Vector2 to, String category, Func<bEntity, bEntity, bool> condition = null)
