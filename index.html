@@ -46,37 +46,160 @@
 
 
       <section id="main_content">
-        <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
+        <h1>
+<a name="banana-engine" class="anchor" href="#banana-engine"><span class="octicon octicon-link"></span></a>Banana Engine</h1>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+<p>XNA based easy prototyping and quick development game engine.
+It's in a very basic state as of yet. Feel free to contribute with amazing ideas &amp; code.</p>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
+<p>This README is also in a very basic state, so don't actually believe anything you read here.</p>
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+<h1>
+<a name="employment" class="anchor" href="#employment"><span class="octicon octicon-link"></span></a>Employment</h1>
 
-<h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
+<p>You shouldn't use this yet, but if you must here are some directions.</p>
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+<ol>
+<li> Create a new XNA Game Project &amp; Solution.</li>
+<li> Clone Banana Engine into the solution folder. 
+The VS2010 project for Banana Engine will be created in the banana-engine folder.</li>
+<li> Add Banana Engine to the your game solution.</li>
+<li> Add a Reference to the Banana Engine project to your game project.</li>
+<li> Add the resources from banana-engine/Resources to the Content project of your game solution.</li>
+<li> You should be ready to start coding in a fun and easy fashion (lies, all lies, I tell you!)</li>
+</ol><h1>
+<a name="quick-start" class="anchor" href="#quick-start"><span class="octicon octicon-link"></span></a>Quick start</h1>
 
-<h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
+<p>Asuming you have prepared the game solution as explained before, here are some quick start steps to get you started.</p>
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+<ol>
+<li>
+<p>Derive bGame and override initSettings() and Initialize() to suit your needs.</p>
 
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
+<pre>
+class Game : bGame
+{
+    Level level;
 
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+    protected override void initSettings()
+    {
+        // TODO: Modify initial settings
+        base.initSettings();
+    }
 
-<h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
+    protected override void Initialize()
+    {
+        // Create Initial Level
+        level = new Level();
+        changeWorld(level);
 
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
+        base.Initialize();
+    }
+}
+</pre>
+</li>
+<li>
+<p>Create a new bGameState derivate to model your game levels and</p>
+
+<pre>
+class Level : bGameState
+{
+    public Level() : base()
+    {
+    }
+}
+</pre>
+</li>
+<li>
+<p>Override its init() method to create your entities categories and add some entities into those:</p>
+
+<pre>
+public override void init()
+{
+    entities.Add("solids", new List());
+    _add(new TestEntity(0, 0), "solids");
+}
+</pre>
+</li>
+<li>
+<p>Override its update() method to update your entity categories in the correct order. Also handle any required Level scoped processing: </p>
+
+<pre>
+public override void update()
+{
+    base.update(dt);
+
+    foreach (bEntity e in entities["solids"])
+        e.update();
+}
+</pre>
+</li>
+<li>
+<p>Override its render() method to handle de drawing of the entities. Also add any Level related drawing routines:</p>
+
+<pre>
+public override void render(GameTime dt, SpriteBatch sb, Matrix matrix)
+{
+    base.render(dt, sb, matrix);
+
+    foreach (bEntity ge in entities["solids"])
+        ge.render(dt, sb);
+}
+</pre>
+</li>
+<li>
+<p>Write a suitable _add() method to handle entity inclusion into the GameState. It can be as complex as required or as simple as this:</p>
+
+<pre>
+protected override bool _add(bEntity e, string category)
+{
+    entities[category].Add(e);
+
+    return base._add(e, category);
+}
+</pre>
+</li>
+<li>
+<p>Create the new bGameEntity derivate and override its init(), update() and draw() methods:</p>
+
+<pre>
+class TestEntity : bEntity
+{
+    bStamp graphic;
+
+    public TestEntity(int x, int y)
+        : base(x, y)
+    {
+    }
+
+    public override void init()
+    {
+        graphic = new bStamp(game.Content.Load("rect"));
+        base.init();
+    }
+
+    public override void update()
+    {
+        base.update();
+
+        graphic.update();
+    }
+
+    public override void render(GameTime dt, SpriteBatch sb)
+    {
+        base.render(dt, sb);
+
+        graphic.render(sb, pos);
+    }
+}
+</pre>
+</li>
+<li><p>That's it. Try running the game, fix any minor error that rises and <a href="https://github.com/GameDevelopmentStudio/banana-engine/issues">report the bigger ones</a>.</p></li>
+<li><p>Have fun</p></li>
+</ol><h1>
+<a name="closing-words" class="anchor" href="#closing-words"><span class="octicon octicon-link"></span></a>Closing words</h1>
+
+<p>This is so undeveloped that we have no closing words yet. Bear with it.</p>
       </section>
 
       <footer>
