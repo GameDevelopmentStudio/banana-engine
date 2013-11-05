@@ -12,13 +12,15 @@ using bEngine.Helpers;
 
 namespace bEngine
 {
-    class bMaskList : bMask
+    public class bMaskList : bMask
     {
         public bMask[] masks;
 
         public bool flipped;
 
-        public bMaskList(bMask[] masks, int x, int y)
+        public bool connected;
+
+        public bMaskList(bMask[] masks, int x, int y, bool connected = true /* whether the masks are part of the same bounding box or not */)
             : base(0, 0, 0, 0)
         {
             // compute dimensions
@@ -27,35 +29,45 @@ namespace bEngine
                 Console.WriteLine("Could not init bMaskList, not one mask was provided");
                 return;
             }
-            this.rect = new Rectangle(0, 0, 0, 0);
-            this.offsetx = int.MaxValue;
-            this.offsety = int.MaxValue;
-            this.masks = masks;
 
-            // compute offsets
-            foreach (var mask in masks)
+            this.connected = connected;
+            if (connected)
             {
-                offsetx = Math.Min(this.offsetx, mask.rect.X);
-                offsety = Math.Min(this.offsety, mask.rect.Y);
-                mask.x = x;
-                mask.x = y;
-            }
+                this.rect = new Rectangle(0, 0, 0, 0);
+                this.offsetx = int.MaxValue;
+                this.offsety = int.MaxValue;
+                this.masks = masks;
 
-            // compute dimensions (need minimum offsets for this)
-            foreach (var mask in masks)
+                // compute offsets
+                foreach (var mask in masks)
+                {
+                    offsetx = Math.Min(this.offsetx, mask.rect.X);
+                    offsety = Math.Min(this.offsety, mask.rect.Y);
+                    mask.x = x;
+                    mask.x = y;
+                }
+
+                // compute dimensions (need minimum offsets for this)
+                foreach (var mask in masks)
+                {
+                    // believe me on this one
+                    if ((this.rect.Width + this.offsetx) < mask.rect.Width + mask.offsetx)
+                        this.rect.Width = mask.rect.Width + mask.offsetx - this.offsetx;
+                    if ((this.rect.Height + this.offsety) < (mask.rect.Height + mask.offsety))
+                        this.rect.Height = mask.rect.Height + mask.offsety - this.offsety;
+                }
+
+                this.x = x;
+                this.y = y;
+
+                // default values
+                flipped = false;
+            }
+            else
             {
-                // believe me on this one
-                if ((this.rect.Width + this.offsetx) < mask.rect.Width + mask.offsetx)
-                    this.rect.Width = mask.rect.Width + mask.offsetx - this.offsetx;
-                if ((this.rect.Height + this.offsety) < (mask.rect.Height + mask.offsety))
-                    this.rect.Height = mask.rect.Height + mask.offsety - this.offsety;
+                // Much simpler initialization, the masklist is just a wrapper in this case
+                this.masks = masks;
             }
-
-            this.x = x;
-            this.y = y;
-
-            // default values
-            flipped = false;
         }
 
         public static new bMask MaskFromFile(StreamReader sr, string src = "", int id = -1)
@@ -107,11 +119,23 @@ namespace bEngine
         {
             bool collided = false;
 
-            // collides with outer mask?
-            if (other is bSolidGrid)
-                collided = other.collides(this);
+            if (connected)
+            {
+                // collides with outer mask?
+                if (other is bSolidGrid)
+                {
+                    collided = other.collides(this);
+                }
+                else
+                {
+                    collided = rect.Intersects(other.rect);
+                }
+            }
             else
-                collided = rect.Intersects(other.rect);
+            {
+                // Assume other collides with the whole list and check one by one if that's ever true
+                collided = true;
+            }
 
             // collides with any inner mask?
             if (collided)
@@ -126,9 +150,24 @@ namespace bEngine
             return false;
         }
 
-        public override void render(SpriteBatch sb, bGame game, Color color)
+        override public void render(SpriteBatch sb)
         {
-            base.render(sb, game, color);
+            if (connected)
+                base.render(sb);
+
+            foreach (bMask mask in masks)
+            {
+                // lazy (x,y) update
+                updateSubmask(mask);
+
+                mask.render(sb);
+            }
+        }
+
+        override public void render(SpriteBatch sb, bGame game, Color color)
+        {
+            if (connected)
+                base.render(sb, game, color);
 
             foreach (bMask mask in masks)
             {
@@ -142,21 +181,23 @@ namespace bEngine
         public void updateSubmask(bMask mask)
         {
             // fix internal masks offsets
-
-            if (!flipped)
+            if (connected)
             {
-                // x origin is the same as the father's (added with offsetx in the x property)
-                mask.x = rect.X - offsetx;
-            }
-            else
-            {
-                // x origin is flipped within the father's limit (a bit tricky)
-                int maskoffsetx = mask.offsetx - offsetx;
-                mask.x = rect.X + w - maskoffsetx - mask.w - mask.offsetx;
-            }
+                if (!flipped)
+                {
+                    // x origin is the same as the father's (added with offsetx in the x property)
+                    mask.x = rect.X - offsetx;
+                }
+                else
+                {
+                    // x origin is flipped within the father's limit (a bit tricky)
+                    int maskoffsetx = mask.offsetx - offsetx;
+                    mask.x = rect.X + w - maskoffsetx - mask.w - mask.offsetx;
+                }
 
-            // y origin is the same as unflipped x (for now)
-            mask.y = rect.Y - offsety;
+                // y origin is the same as unflipped x (for now)
+                mask.y = rect.Y - offsety;
+            }
         }
     }
 }
