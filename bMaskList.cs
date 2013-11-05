@@ -67,6 +67,8 @@ namespace bEngine
             {
                 // Much simpler initialization, the masklist is just a wrapper in this case
                 this.masks = masks;
+                this.x = x;
+                this.y = y;
             }
         }
 
@@ -117,13 +119,10 @@ namespace bEngine
 
         override public void update(int x, int y)
         {
+            base.update(x, y);
             // If masks are connected, we don't need to update them,
             // they will be lazily updated
-            if (connected)
-            {
-                base.update(x, y);
-            }
-            else
+            if (!connected)
             {
                 foreach (bMask mask in masks)
                 {
