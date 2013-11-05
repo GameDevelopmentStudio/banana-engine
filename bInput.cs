@@ -193,5 +193,20 @@ namespace bEngine
             return currentPadStates[idx].ThumbSticks.Left.Y < -joystickDeadzone ||
                 currentKeyState.IsKeyDown(Keys.Down);
         }
+
+        public int mouseX
+        {
+            get { return Mouse.GetState().X; }
+        }
+
+        public int mouseY
+        {
+            get { return Mouse.GetState().Y; }
+        }
+
+        public Vector2 mousePosition
+        {
+            get { return new Vector2(Mouse.GetState().X, Mouse.GetState().Y); }
+        }
     }
 }
