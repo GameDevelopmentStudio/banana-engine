@@ -18,7 +18,14 @@ namespace bEngine
         public int y { get { return (int)pos.Y; } set { pos.Y = value; } }
 
         public List<String> attributes;
-        public bMask mask;
+        protected bMask _mask;
+
+        public virtual bMask mask
+        {
+            get { return _mask; }
+            set { _mask = value; }
+        }
+
         public bool collidable;
 
         public Color color;
