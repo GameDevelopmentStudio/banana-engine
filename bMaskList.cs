@@ -214,6 +214,10 @@ namespace bEngine
                 // y origin is the same as unflipped x (for now)
                 mask.y = rect.Y - offsety;
             }
+            else
+            {
+                mask.update(x,y);
+            }
         }
     }
 }
