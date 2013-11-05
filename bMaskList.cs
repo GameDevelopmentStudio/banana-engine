@@ -115,7 +115,24 @@ namespace bEngine
             return maskList;
         }
 
-        public override bool collides(bMask other)
+        override public void update(int x, int y)
+        {
+            // If masks are connected, we don't need to update them,
+            // they will be lazily updated
+            if (connected)
+            {
+                base.update(x, y);
+            }
+            else
+            {
+                foreach (bMask mask in masks)
+                {
+                    mask.update(x, y);
+                }
+            }
+        }
+
+        override public bool collides(bMask other)
         {
             bool collided = false;
 
