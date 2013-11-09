@@ -18,6 +18,9 @@ namespace bEngine
         protected KeyboardState oldKeyState;
         public KeyboardState currentKeyState;
 
+        protected MouseState oldMouseState;
+        public MouseState currentMouseState;
+
         protected float joystickDeadzone = 0.4f;
         public float getJoystickDeadzone() { return joystickDeadzone; }
         public void setJoystickDeadzone(float value) { joystickDeadzone = value; }
@@ -35,6 +38,9 @@ namespace bEngine
 
             currentKeyState = Keyboard.GetState();
             oldKeyState = currentKeyState;
+
+            currentMouseState = Mouse.GetState();
+            oldMouseState = currentMouseState;
 
             keys = new Dictionary<string, List<Object>>();
         }
@@ -63,6 +69,9 @@ namespace bEngine
 
             oldKeyState = currentKeyState;
             currentKeyState = Keyboard.GetState();
+
+            oldMouseState = currentMouseState;
+            currentMouseState = Mouse.GetState();
         }
 
         public bool pressed(Keys key)
@@ -207,6 +216,36 @@ namespace bEngine
         public Vector2 mousePosition
         {
             get { return new Vector2(Mouse.GetState().X, Mouse.GetState().Y); }
+        }
+
+        public bool check(int mouseButton)
+        {
+            return checkMouseState(mouseButton, ButtonState.Pressed, currentMouseState);
+        }
+
+        public bool pressed(int mouseButton)
+        {
+            return checkMouseState(mouseButton, ButtonState.Pressed, currentMouseState) &&
+                checkMouseState(mouseButton, ButtonState.Released, oldMouseState);
+        }
+
+        public bool released(int mouseButton)
+        {
+            return checkMouseState(mouseButton, ButtonState.Released, currentMouseState) &&
+                checkMouseState(mouseButton, ButtonState.Pressed, oldMouseState);
+        }
+
+        protected bool checkMouseState(int mouseButton, ButtonState state, MouseState mouseState)
+        {
+            
+            if (mouseButton == 0)
+                return mouseState.LeftButton == state;
+            else if (mouseButton == 1)
+                return mouseState.RightButton == state;
+            else if (mouseButton == 2)
+                return mouseState.MiddleButton == state;
+
+            return false;
         }
     }
 }
