@@ -178,6 +178,12 @@ namespace bEngine
             return instancePlace(new Vector2(x, y), category, attr, condition);
         }
 
+        virtual public bEntity instancePlace(bMask collisionMask, String category, String attr = null, Func<bEntity, bEntity, bool> condition = null)
+        {
+            bEntity e = world.instanceCollision(collisionMask, category, attr, condition);
+            return e;
+        }
+
         virtual public bEntity instancePlace(Vector2 position, String category, String attr = null, Func<bEntity, bEntity, bool> condition = null)
         {
             Vector2 old = this.pos;

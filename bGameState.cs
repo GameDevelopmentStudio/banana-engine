@@ -99,6 +99,16 @@ namespace bEngine
             }
         }
 
+        virtual public bool collides(bMask mask, string[] categories, Func<bEntity, bEntity, bool> condition = null)
+        {
+            foreach (string category in categories)
+                if (entities[category] != null)
+                    foreach (bEntity ge in entities[category])
+                        if (ge.collidable && ge.mask != null && mask.collides(ge.mask) && (condition == null || condition(null, ge)))
+                            return true;
+            return false;
+        }
+
         virtual public bool collides(bEntity e, string[] categories, Func<bEntity, bEntity, bool> condition = null)
         {
             foreach (string category in categories)
@@ -107,6 +117,16 @@ namespace bEngine
                         if (ge != e && ge.collidable && e.collides(ge) && (condition == null || condition(e, ge)))
                             return true;
             return false;
+        }
+
+        virtual public bEntity instanceCollision(bMask mask, string category, string attr = null, Func<bEntity, bEntity, bool> condition = null)
+        {
+            if (entities[category] != null)
+                foreach (bEntity ge in entities[category])
+                    if (ge.collidable && ge.mask != null && mask.collides(ge.mask) && (condition == null || condition(null, ge)))
+                        if (attr == null || ge.hasAttribute(attr))
+                            return ge;
+            return null;
         }
 
         virtual public bEntity instanceCollision(bEntity e, string category, string attr = null, Func<bEntity, bEntity, bool> condition = null)
@@ -126,6 +146,19 @@ namespace bEngine
             if (entities[category] != null)
                 foreach (bEntity ge in entities[category])
                     if (ge != e && ge.collidable && e.collides(ge))
+                        if (attr == null || ge.hasAttribute(attr))
+                            result.Add(ge);
+
+            return result;
+        }
+
+        virtual public List<bEntity> instancesCollision(bMask mask, string category, string attr = null)
+        {
+            List<bEntity> result = new List<bEntity>();
+
+            if (entities[category] != null)
+                foreach (bEntity ge in entities[category])
+                    if (ge.collidable && ge.mask != null && mask.collides(ge.mask))
                         if (attr == null || ge.hasAttribute(attr))
                             result.Add(ge);
 
