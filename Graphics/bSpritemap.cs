@@ -21,6 +21,8 @@ namespace bEngine.Graphics
 
         int _width, _height;
 
+        public float scaleX, scaleY;
+
         public override int width { get { return spriteWidth; } }
         public override int height { get { return spriteHeight; } }
 
@@ -38,6 +40,9 @@ namespace bEngine.Graphics
 
             animations = new Dictionary<string, bAnim>();
             currentAnim = null;
+
+            scaleX = 1;
+            scaleY = 1;
         }
 
         virtual public void add(bAnim animation)
@@ -76,7 +81,7 @@ namespace bEngine.Graphics
             // Avoid crashing if no animation is currently set
             if (currentAnim == null)
                 return;
-            Rectangle to = new Rectangle((int) position.X, (int) position.Y, spriteWidth, spriteHeight);
+            Rectangle to = new Rectangle((int) position.X, (int) position.Y, (int) (spriteWidth*scaleX), (int) (spriteHeight*scaleY));
             sb.Draw(image, to, getFrame(currentAnim.frame), color, 0, Vector2.Zero, (flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None), 0);
         }
     }
