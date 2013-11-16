@@ -179,6 +179,26 @@ namespace bEngine
             return false;
         }
 
+        public bool joyLeft(PlayerIndex idx)
+        {
+            return currentPadStates[idx].ThumbSticks.Left.X < -joystickDeadzone;
+        }
+
+        public bool joyRight(PlayerIndex idx)
+        {
+            return currentPadStates[idx].ThumbSticks.Left.X > joystickDeadzone;
+        }
+
+        public bool joyUp(PlayerIndex idx)
+        {
+            return currentPadStates[idx].ThumbSticks.Left.Y < -joystickDeadzone;
+        }
+
+        public bool joyDown(PlayerIndex idx)
+        {
+            return currentPadStates[idx].ThumbSticks.Left.Y > joystickDeadzone;
+        }
+
         public bool left(PlayerIndex idx = PlayerIndex.One)
         {
             return currentPadStates[idx].ThumbSticks.Left.X < -joystickDeadzone ||
