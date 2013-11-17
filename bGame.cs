@@ -71,9 +71,6 @@ namespace bEngine
         protected override void Initialize()
         {
             base.Initialize();
-
-            input.registerKey("DEBUG", Buttons.Y);
-            input.registerKey("DEBUG", Keys.H);
         }
 
         protected override void LoadContent()
@@ -129,10 +126,6 @@ namespace bEngine
             {
                 screenshot();
             }
-
-            // Switches between debug on/off state
-            if (input.pressed("DEBUG"))
-                bConfig.DEBUG = !bConfig.DEBUG;
         }
 
         protected override void Update(GameTime gameTime)
