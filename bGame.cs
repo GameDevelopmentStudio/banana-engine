@@ -187,7 +187,7 @@ namespace bEngine
         {
         }
 
-        protected override void Draw(GameTime gameTime)
+        protected void _Draw(GameTime gameTime)
         {
             Resolution.BeginDraw();
             // Generate resolution render matrix 
@@ -212,9 +212,13 @@ namespace bEngine
             // Transition
             if (gamestateTransition != null)
                 gamestateTransition.render(spriteBatch);
-            
-            spriteBatch.End();
 
+            spriteBatch.End();
+        }
+
+        protected override void Draw(GameTime gameTime)
+        {
+            _Draw(gameTime);
             base.Draw(gameTime);
         }
 
