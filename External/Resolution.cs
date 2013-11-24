@@ -41,7 +41,7 @@ namespace bEngine
             _Width = device.PreferredBackBufferWidth;
             _Height = device.PreferredBackBufferHeight;
             _Device = device;
-            _dirtyMatrix = true;
+            _dirtyMatrix = true;            
             ApplyResolutionSettings();
         }
 

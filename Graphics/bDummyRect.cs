@@ -20,7 +20,7 @@ namespace bEngine.Graphics
 
         public static Texture2D sharedDummyRect(Game game)
         {
-            if (instance == null)
+            if (instance == null || instance.texture.IsDisposed)
                 instance = new bDummyRect(game);
             return instance.texture;
         }

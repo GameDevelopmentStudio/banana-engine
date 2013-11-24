@@ -29,6 +29,12 @@ namespace bEngine
         protected double timeSinceLastUpdate = 0;
 
         // Resolution
+        protected bool _fullscreen;
+        public bool fullscreen
+        {
+            get { return _fullscreen; }
+            set { _fullscreen = value; }
+        }
         protected int width, height;
         public int getWidth() { return width; }
         public int getHeight() { return height; }
@@ -62,6 +68,7 @@ namespace bEngine
             verticalZoom = 3;
             width = 320;
             height = 240;
+            fullscreen = false;
 
             Content.RootDirectory = "Content";
 
