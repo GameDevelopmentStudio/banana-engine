@@ -191,12 +191,12 @@ namespace bEngine
 
         public bool joyUp(PlayerIndex idx)
         {
-            return currentPadStates[idx].ThumbSticks.Left.Y < -joystickDeadzone;
+            return currentPadStates[idx].ThumbSticks.Left.Y > joystickDeadzone;
         }
 
         public bool joyDown(PlayerIndex idx)
         {
-            return currentPadStates[idx].ThumbSticks.Left.Y > joystickDeadzone;
+            return currentPadStates[idx].ThumbSticks.Left.Y < -joystickDeadzone;
         }
 
         public bool left(PlayerIndex idx = PlayerIndex.One)
