@@ -199,6 +199,26 @@ namespace bEngine
             return e;
         }
 
+        virtual public List<bEntity> instancesPlace(int x, int y, String category, String attr = null, Func<bEntity, bEntity, bool> condition = null)
+        {
+            return instancesPlace(new Vector2(x, y), category, attr, condition);
+        }
+
+        virtual public List<bEntity> instancesPlace(Vector2 position, String category, String attr = null, Func<bEntity, bEntity, bool> condition = null)
+        {
+            Vector2 old = this.pos;
+
+            this.pos = position;
+            mask.update(x, y);
+
+            List<bEntity> ee = world.instancesCollision(this, category, attr, condition);
+
+            this.pos = old;
+            mask.update(x, y);
+
+            return ee;
+        }
+
         virtual public bool hasAttribute(String attr)
         {
             return attributes.Contains(attr);

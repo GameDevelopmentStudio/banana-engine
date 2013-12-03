@@ -139,26 +139,26 @@ namespace bEngine
             return null;
         }
 
-        virtual public List<bEntity> instancesCollision(bEntity e, string category, string attr = null)
+        virtual public List<bEntity> instancesCollision(bEntity e, string category, string attr = null, Func<bEntity, bEntity, bool> condition = null)
         {
             List<bEntity> result = new List<bEntity>();
 
             if (entities[category] != null)
                 foreach (bEntity ge in entities[category])
-                    if (ge != e && ge.collidable && e.collides(ge))
+                    if (ge != e && ge.collidable && e.collides(ge) && (condition == null || condition(e, ge)))
                         if (attr == null || ge.hasAttribute(attr))
                             result.Add(ge);
 
             return result;
         }
 
-        virtual public List<bEntity> instancesCollision(bMask mask, string category, string attr = null)
+        virtual public List<bEntity> instancesCollision(bMask mask, string category, string attr = null, Func<bEntity, bEntity, bool> condition = null)
         {
             List<bEntity> result = new List<bEntity>();
 
             if (entities[category] != null)
                 foreach (bEntity ge in entities[category])
-                    if (ge.collidable && ge.mask != null && mask.collides(ge.mask))
+                    if (ge.collidable && ge.mask != null && mask.collides(ge.mask) && (condition == null || condition(null, ge)))
                         if (attr == null || ge.hasAttribute(attr))
                             result.Add(ge);
 
