@@ -180,18 +180,28 @@ namespace bEngine
 
         virtual public bEntity instancePlace(bMask collisionMask, String category, String attr = null, Func<bEntity, bEntity, bool> condition = null)
         {
-            bEntity e = world.instanceCollision(collisionMask, category, attr, condition);
+            return instancePlace(collisionMask, new String[] { category }, attr, condition);
+        }
+
+        virtual public bEntity instancePlace(bMask collisionMask, String[] categories, String attr = null, Func<bEntity, bEntity, bool> condition = null)
+        {
+            bEntity e = world.instanceCollision(collisionMask, categories, attr, condition);
             return e;
         }
 
         virtual public bEntity instancePlace(Vector2 position, String category, String attr = null, Func<bEntity, bEntity, bool> condition = null)
+        {
+            return instancePlace(position, new String[] { category }, attr, condition);
+        }
+
+        virtual public bEntity instancePlace(Vector2 position, String[] categories, String attr = null, Func<bEntity, bEntity, bool> condition = null)
         {
             Vector2 old = this.pos;
 
             this.pos = position;
             mask.update(x, y);
 
-            bEntity e = world.instanceCollision(this, category, attr, condition);
+            bEntity e = world.instanceCollision(this, categories, attr, condition);
 
             this.pos = old;
             mask.update(x, y);
@@ -201,17 +211,27 @@ namespace bEngine
 
         virtual public List<bEntity> instancesPlace(int x, int y, String category, String attr = null, Func<bEntity, bEntity, bool> condition = null)
         {
-            return instancesPlace(new Vector2(x, y), category, attr, condition);
+            return instancesPlace(x, y, new String[] { category }, attr, condition);
+        }
+
+        virtual public List<bEntity> instancesPlace(int x, int y, String[] categories, String attr = null, Func<bEntity, bEntity, bool> condition = null)
+        {
+            return instancesPlace(new Vector2(x, y), categories, attr, condition);
         }
 
         virtual public List<bEntity> instancesPlace(Vector2 position, String category, String attr = null, Func<bEntity, bEntity, bool> condition = null)
+        {
+            return instancesPlace(position, new String[] { category }, attr, condition);
+        }
+
+        virtual public List<bEntity> instancesPlace(Vector2 position, String[]  categories, String attr = null, Func<bEntity, bEntity, bool> condition = null)
         {
             Vector2 old = this.pos;
 
             this.pos = position;
             mask.update(x, y);
 
-            List<bEntity> ee = world.instancesCollision(this, category, attr, condition);
+            List<bEntity> ee = world.instancesCollision(this, categories, attr, condition);
 
             this.pos = old;
             mask.update(x, y);
