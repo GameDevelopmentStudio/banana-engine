@@ -81,7 +81,7 @@ namespace bEngine.Graphics
             // Avoid crashing if no animation is currently set
             if (currentAnim == null)
                 return;
-            Rectangle to = new Rectangle((int) position.X, (int) position.Y, (int) (spriteWidth*scaleX), (int) (spriteHeight*scaleY));
+            Rectangle to = new Rectangle((int) position.X + offsetx, (int) position.Y + offsety, (int) (spriteWidth*scaleX), (int) (spriteHeight*scaleY));
             sb.Draw(image, to, getFrame(currentAnim.frame), color, 0, Vector2.Zero, (flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None), 0);
         }
     }

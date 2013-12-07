@@ -20,6 +20,8 @@ namespace bEngine.Graphics
             set { color.A = (byte) (value*256); } 
         }
 
+        public int offsetx = 0, offsety = 0;
+
         virtual public void render(SpriteBatch sb, int x, int y)
         {
             render(sb, new Vector2(x, y));
