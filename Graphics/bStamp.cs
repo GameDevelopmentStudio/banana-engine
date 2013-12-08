@@ -11,7 +11,7 @@ namespace bEngine.Graphics
     public class bStamp : bGraphic
     {
         public bool flipped;
-        protected Texture2D image;
+        public Texture2D image;
         public Rectangle source;
 
         public bStamp(Texture2D image, Rectangle source) : this(image)
