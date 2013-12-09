@@ -25,7 +25,7 @@ namespace bEngine
         public Color bgColor;
 
         // Time flow
-        public double millisecondsPerFrame = 17;
+        public double millisecondsPerFrame = 33.33;
         protected double timeSinceLastUpdate = 0;
 
         // Resolution
@@ -173,7 +173,7 @@ namespace bEngine
             // its inital step
             if (!newWorldThisStep && (timeSinceLastUpdate < millisecondsPerFrame))
                 return;
-            timeSinceLastUpdate = 0;
+            timeSinceLastUpdate = timeSinceLastUpdate - millisecondsPerFrame;
 
             // Update inputstate
             input.update();
