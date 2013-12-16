@@ -18,6 +18,7 @@ namespace bEngine.Graphics
         public Dictionary<string, bAnim> animations;
 
         public bool flipped = false;
+        public bool vflipped = false;
 
         int _width, _height;
 
@@ -82,7 +83,9 @@ namespace bEngine.Graphics
             if (currentAnim == null)
                 return;
             Rectangle to = new Rectangle((int) position.X + offsetx, (int) position.Y + offsety, (int) (spriteWidth*scaleX), (int) (spriteHeight*scaleY));
-            sb.Draw(image, to, getFrame(currentAnim.frame), color, 0, Vector2.Zero, (flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None), 0);
+
+            SpriteEffects effects = (flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None) | (vflipped ? SpriteEffects.FlipVertically : SpriteEffects.None);
+            sb.Draw(image, to, getFrame(currentAnim.frame), color, 0, Vector2.Zero, effects, 0);
         }
     }
 

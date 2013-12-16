@@ -11,6 +11,7 @@ namespace bEngine.Graphics
     public class bStamp : bGraphic
     {
         public bool flipped;
+        public bool vflipped;
         public Texture2D image;
         public Rectangle source;
 
@@ -31,6 +32,7 @@ namespace bEngine.Graphics
         {
             this.image = image;
             flipped = false;
+            vflipped = false;
 
             source = new Rectangle(0, 0, image.Width, image.Height);
             width = source.Width;
@@ -40,8 +42,11 @@ namespace bEngine.Graphics
         override public void render(SpriteBatch sb, Vector2 position)
         {
             Rectangle dest = new Rectangle((int) position.X, (int) position.Y, source.Width, source.Height);
-            if (flipped)
-                sb.Draw(image, dest, source, color, 0, Vector2.Zero, (flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None), 0);
+            if (flipped || vflipped)
+            {
+                SpriteEffects effects = (flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None) | (vflipped ? SpriteEffects.FlipVertically : SpriteEffects.None);
+                sb.Draw(image, dest, source, color, 0, Vector2.Zero, effects, 0);
+            }
             else
                 sb.Draw(image, position, source, color);
         }
