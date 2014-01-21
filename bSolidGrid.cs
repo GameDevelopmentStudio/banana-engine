@@ -5,6 +5,7 @@ using System.Text;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using bEngine.Graphics;
 
 namespace bEngine
 {
@@ -89,7 +90,7 @@ namespace bEngine
                             r.X = x + xx * tileWidth;
                             r.Y = y + yy * tileHeight;
 
-                            sb.Draw(gfx, r, Color.PowderBlue);
+                            sb.Draw(bDummyRect.sharedDummyRect(game), r, Color.PowderBlue);
                         }
                     }
             }
